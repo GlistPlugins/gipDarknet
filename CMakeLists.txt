@@ -64,7 +64,7 @@ list(APPEND PLUGIN_SRCS
 ##### PLUGIN HEADERS #####
 list(APPEND PLUGIN_INCLUDES
 			${PLUGIN_DIR}/src
-			${PLUGIN_DIR}/src/darknet
+#			${PLUGIN_DIR}/src/darknet
 			${PLUGIN_LIBS_DIR}/include
 			${PLUGIN_LIBS_DIR}/include/darknet
 )
