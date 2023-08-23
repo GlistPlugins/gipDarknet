@@ -64,7 +64,6 @@ list(APPEND PLUGIN_SRCS
 ##### PLUGIN HEADERS #####
 list(APPEND PLUGIN_INCLUDES
 			${PLUGIN_DIR}/src
-			${PLUGIN_DIR}/src/darknet
 			${PLUGIN_LIBS_DIR}/include
 			${PLUGIN_LIBS_DIR}/include/darknet
 )
@@ -107,6 +106,5 @@ elseif(LINUX)
 elseif(APPLE)
 	list(APPEND PLUGIN_LINKLIBS
 				#Lib names
-				darknet
 	)
 endif(WIN32)
