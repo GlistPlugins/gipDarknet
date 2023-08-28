@@ -20,8 +20,11 @@ public:
 	void initialize();
 	void initialize(std::string dataCfg, std::string cfgFile, std::string weightFile, float thresh = 0.5f, float hierThresh = 0.5f);
 
+	void detectObjectsYolo(gImage* src);
 	void detectObjectsYolo(std::string filename, std::string outfile);
 	void detectObjectsYolo(char *datacfg, char *cfgfile, char *weightfile, char *filename, float thresh, float hier_thresh, char *outfile);
+
+	image gImageToDNImage(gImage* src);
 
 private:
 	char *datacfg;
