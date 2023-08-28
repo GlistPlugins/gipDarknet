@@ -44,6 +44,47 @@ void gipDarknet::initialize(std::string dataCfg, std::string cfgFile, std::strin
     srand(2222222);
 }
 
+void gipDarknet::detectObjectsYolo(gImage* src) {
+    double time;
+    char buff[256];
+    char *input = buff;
+    float nms=.45;
+    while(1){
+    	if(!input) return;
+        image im = gImageToDNImage(src);
+        image sized = letterbox_image(im, net->w, net->h);
+        layer l = net->layers[net->n-1];
+
+        float *X = sized.data;
+        network_predict(net, X);
+
+        int nboxes = 0;
+        detection *dets = get_network_boxes(net, im.w, im.h, thresh, hier_thresh, 0, 1, &nboxes);
+        if (nms) do_nms_sort(dets, nboxes, l.classes, nms);
+        draw_detections(im, dets, nboxes, thresh, names, alphabet, l.classes);
+        free_detections(dets, nboxes);
+
+        int h = src->getHeight();
+        int w = src->getWidth();
+        int c = src->getComponentNum();
+
+        unsigned char *data = src->getImageData();
+        int i, j, k;
+        for(i = 0; i < h; ++i){
+            for(j = 0; j < w; ++j){
+            	for(k= 0; k < c; ++k){
+            		data[k + c*j + c*w*i] = im.data[k*w*h + i*w + j] * 255.0f;
+                }
+            }
+        }
+        src->useData();
+
+    	free_image(im);
+    	free_image(sized);
+    	break;
+    }
+}
+
 void gipDarknet::detectObjectsYolo(std::string fileName, std::string outFile) {
 	fileName = gGetImagesDir() + fileName;
 	char* filename = (char*)fileName.c_str();
@@ -145,4 +186,22 @@ void gipDarknet::detectObjectsYolo(char *datacfg, char *cfgfile, char *weightfil
         gLogi("gipDarknet") << "outfile:" << outfile << ".jpg";
         if (filename) break;
     }
+}
+
+image gipDarknet::gImageToDNImage(gImage *src) {
+    int h = src->getHeight();
+    int w = src->getWidth();
+    int c = src->getComponentNum();
+    image im = make_image(w, h, c);
+    unsigned char *data = src->getImageData();
+    int step = src->getWidth();
+    int i, j, k;
+    for(i = 0; i < h; ++i){
+        for(j = 0; j < w; ++j){
+        	for(k= 0; k < c; ++k){
+                im.data[k*w*h + i*w + j] = (float)data[k + c*j + c*w*i] / 255.0f;
+            }
+        }
+    }
+    return im;
 }
