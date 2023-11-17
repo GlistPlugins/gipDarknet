@@ -14,10 +14,10 @@ gipDarknet::gipDarknet() {
 gipDarknet::~gipDarknet() {
 }
 
-void gipDarknet::initialize() {
+void gipDarknet::initialize(std::string versionId) {
     std::string datacfg = "coco.data";
-    std::string cfgfile = "yolov7-tiny.cfg";
-    std::string weightfile = "yolov7-tiny.weights";
+    std::string cfgfile = "yolov" + versionId + ".cfg";
+    std::string weightfile = "yolov" + versionId + ".weights";
     float thresh = 0.5f;
     float hier_thresh = 0.5f;
     initialize((char*)datacfg.c_str(), (char*)cfgfile.c_str(), (char*)weightfile.c_str(), thresh, hier_thresh);

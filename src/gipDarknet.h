@@ -17,7 +17,7 @@ public:
 	gipDarknet();
 	virtual ~gipDarknet();
 
-	void initialize();
+	void initialize(std::string versionId = "7-tiny");
 	void initialize(std::string dataCfg, std::string cfgFile, std::string weightFile, float thresh = 0.5f, float hierThresh = 0.5f);
 
 	void detectObjectsYolo(gImage* src);
