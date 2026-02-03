@@ -90,7 +90,7 @@ elseif(APPLE)
 	set_target_properties(darknet PROPERTIES IMPORTED_LOCATION
 			${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib)
 			
-	set_target_properties(${pluginname} PROPERTIES
+	set_target_properties(darknet PROPERTIES
 		BUILD_RPATH "${PLUGIN_LIBS_DIR}/lib/macos"
 		INSTALL_RPATH "@loader_path/../glistplugins/${pluginname}/libs/lib/macos"
 	)
