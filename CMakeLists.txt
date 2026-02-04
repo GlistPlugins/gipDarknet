@@ -86,14 +86,24 @@ elseif(LINUX)
 			${PLUGIN_LIBS_DIR}/lib/linux/libdarknet.so)
 	
 elseif(APPLE)
-	add_library(darknet SHARED IMPORTED)
-	set_target_properties(darknet PROPERTIES IMPORTED_LOCATION
-			${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib)
-			
-	set_target_properties(darknet PROPERTIES
-		BUILD_RPATH "${PLUGIN_LIBS_DIR}/lib/macos"
-		INSTALL_RPATH "@loader_path/../glistplugins/${pluginname}/libs/lib/macos"
-	)
+    add_library(darknet SHARED IMPORTED)
+    set_target_properties(darknet PROPERTIES IMPORTED_LOCATION
+            ${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib)
+
+    execute_process(
+        COMMAND install_name_tool -id "@rpath/libdarknet.dylib"
+            "${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib"
+    )
+
+    file(COPY ${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib
+        DESTINATION ${CMAKE_BINARY_DIR}/Release)
+    
+    install(CODE "
+        execute_process(
+            COMMAND install_name_tool -add_rpath @executable_path 
+                ${CMAKE_BINARY_DIR}/Release/\${APP_NAME}
+        )
+    ")
 endif(WIN32)
 
 
