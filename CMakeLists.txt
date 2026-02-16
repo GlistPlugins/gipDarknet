@@ -81,30 +81,43 @@ if(WIN32)
 				${PLUGIN_LIBS_DIR}/lib/win32
 	)
 elseif(LINUX)
-	#Linux libs here
-		
 	add_library(darknet SHARED IMPORTED)
 	set_target_properties(darknet PROPERTIES IMPORTED_LOCATION
-			/home/noyan/dev/glist/glistplugins/gipDarknet/libs/lib/linux/libdarknet.so)			
+			${PLUGIN_LIBS_DIR}/lib/linux/libdarknet.so)
 	
 elseif(APPLE)
-	#Macos libs here
+    add_library(darknet SHARED IMPORTED)
+    set_target_properties(darknet PROPERTIES IMPORTED_LOCATION
+            ${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib)
+
+    execute_process(
+        COMMAND install_name_tool -id "@rpath/libdarknet.dylib"
+            "${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib"
+    )
+
+    file(COPY ${PLUGIN_LIBS_DIR}/lib/macos/libdarknet.dylib
+        DESTINATION ${CMAKE_BINARY_DIR}/Release)
+    
+    install(CODE "
+        execute_process(
+            COMMAND install_name_tool -add_rpath @executable_path 
+                ${CMAKE_BINARY_DIR}/Release/\${APP_NAME}
+        )
+    ")
 endif(WIN32)
 
 
 ##### PLUGIN DEPENDENCY LINKING (IF ANY) #####					
 if(WIN32)
 	list(APPEND PLUGIN_LINKLIBS
-				#Lib names
 				darknet
 	)
 elseif(LINUX)
 	list(APPEND PLUGIN_LINKLIBS
-				#Lib names
 				darknet
 	)
 elseif(APPLE)
 	list(APPEND PLUGIN_LINKLIBS
-				#Lib names
+				darknet
 	)
 endif(WIN32)
